@@ -52,6 +52,7 @@ void MainWindow::populandoTabela()
     ui->tabela->clearContents();
     //ui->tableWidget->setColumnCount(COLUMNS);
 
+    //mudar caminho do arquivo
     QString path = "C:\\Users\\Usuário\\Documents\\GerenciadorDeProcessos\\processos.txt";
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly)) {
