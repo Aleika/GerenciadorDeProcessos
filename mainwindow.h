@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QWidget>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,6 +18,7 @@ public:
     void populandoTabela();
     void pegarPID();
     void executarComando(int idComando);
+    void timerEvent(QTimerEvent *event);
 
 public slots:
      void suspender();
@@ -24,7 +26,8 @@ public slots:
      void matar();
      void alterarCPU();
      void mudarPrioridade();
-     void pegarPIDTabela(int column, int row);
+     void pegarPIDTabela(QModelIndex *index);
+     void filtro();
 
 
 private:

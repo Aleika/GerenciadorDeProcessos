@@ -1,11 +1,7 @@
 #define COLUMNS 7
-
 #define SUSPENDER 1
 #define MATAR 2
 #define CONTINUAR 3
-#define MUDAR_PRIORIDADE 4
-#define ALTERAR_CPU 5
-
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -40,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     populandoTabela();
+    startTimer(1000);
 }
 
 MainWindow::~MainWindow()
@@ -50,13 +47,11 @@ MainWindow::~MainWindow()
 void MainWindow::populandoTabela()
 {
     ui->tabela->clearContents();
-    //ui->tableWidget->setColumnCount(COLUMNS);
 
     QString path = "C:\\Users\\Usuário\\Documents\\GerenciadorDeProcessos\\processos.txt";
     QFile file(path);
     if(!file.open(QIODevice::ReadOnly)) {
         qDebug() << file.errorString();
-       // ui->textEditPID->setText(path);
     }
 
     QTextStream in(&file);
@@ -132,7 +127,6 @@ void MainWindow::executarComando(int idComando)
         break;
     case CONTINUAR:
         comando = "kill -CONT "+pid;
-
         break;
     default:
         break;
@@ -144,6 +138,14 @@ void MainWindow::executarComando(int idComando)
     system(comandoFinal);
 }
 
+void MainWindow::timerEvent(QTimerEvent *event)
+{
+//    if(ui->textEditFiltro->toPlainText().isEmpty()){
+//        system("pstree grep > processos.txt");
+//        populandoTabela();
+//    }
+}
+
 void MainWindow::suspender()
 {
     executarComando(SUSPENDER);
@@ -152,7 +154,6 @@ void MainWindow::suspender()
 void MainWindow::continuar()
 {
     executarComando(CONTINUAR);
-
 }
 
 void MainWindow::matar()
@@ -195,9 +196,25 @@ void MainWindow::mudarPrioridade()
     qDebug() << novaPrioridade;
 }
 
-void MainWindow::pegarPIDTabela(int column, int row)
+void MainWindow::pegarPIDTabela(QModelIndex *i)
 {
-    QItemSelectionModel *select = ui->tabela->selectionModel();
-    qDebug() << select->selectedRows().at(0).row();
+
+    qDebug() << i->row();
+    qDebug() << "clicou";
+}
+
+void MainWindow::filtro()
+{
+     QString textoFiltro = ui->textEditFiltro->toPlainText();
+
+     QString comando;
+     comando = " ps -auf | grep " + textoFiltro + " > processos.txt";
+
+     QByteArray comandoConvertido = comando.toLocal8Bit();
+     const char *comandoFinal = comandoConvertido.data();
+
+ //    system(comandoFinal);
+
+     populandoTabela();
 }
 
